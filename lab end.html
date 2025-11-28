@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Notes App</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .note { 
+            padding: 10px; 
+            margin: 10px 0; 
+            background: #f2f2f2; 
+            border-radius: 5px; 
+        }
+        button { margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+<h2>Student Notes App (CRUD)</h2>
+
+<input type="text" id="noteInput" placeholder="Enter note..." />
+<button onclick="addNote()">Add Note</button>
+
+<h3>Saved Notes</h3>
+<div id="notesList"></div>
+
+<script>
+
+// Load saved notes on page load
+window.onload = function() {
+    displayNotes();
+};
+
+// Add Note
+function addNote() {
+    let note = document.getElementById("noteInput").value;
+
+    if (note.trim() === "") return;
+
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+    notes.push(note);
+    localStorage.setItem("notes", JSON.stringify(notes));
+
+    document.getElementById("noteInput").value = "";
+    displayNotes();
+}
+
+// Display Notes
+function displayNotes() {
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+    let list = "";
+
+    notes.forEach((n, index) => {
+        list += `
+        <div class='note'>
+            ${n}
+            <br><br>
+            <button onclick="editNote(${index})">Edit</button>
+            <button onclick="deleteNote(${index})">Delete</button>
+        </div>
+        `;
+    });
+
+    document.getElementById("notesList").innerHTML = list;
+}
+
+// Edit Note
+function editNote(index) {
+    let notes = JSON.parse(localStorage.getItem("notes"));
+    let updatedNote = prompt("Edit your note:", notes[index]);
+
+    if (updatedNote !== null) {
+        notes[index] = updatedNote;
+        localStorage.setItem("notes", JSON.stringify(notes));
+        displayNotes();
+    }
+}
+
+// Delete Note
+function deleteNote(index) {
+    let notes = JSON.parse(localStorage.getItem("notes"));
+    notes.splice(index, 1);
+    localStorage.setItem("notes", JSON.stringify(notes));
+    displayNotes();
+}
+
+</script>
+
+</body>
+</html>
